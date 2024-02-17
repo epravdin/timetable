@@ -1,22 +1,17 @@
 import fastify from 'fastify';
+import env from './plugins/env';
 
 const main = async () => {
-  const server = fastify({
-    logger: true
-  });
+  const server = fastify({ logger: true });
 
-  server.get('/', (req, rep) => {
-    return {
-      alive: true
-    };
-  });
+  await server.register(env);
 
   try {
-    await server.listen({ port: 3000 })
+    await server.listen({ port: 3000 });
   } catch (err) {
-    server.log.error(err)
-    process.exit(1)
+    server.log.error(err);
+    process.exit(1);
   }
-}
+};
 
 main();

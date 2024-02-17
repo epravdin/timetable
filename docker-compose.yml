@@ -4,6 +4,7 @@ services:
     container_name: timetable-db
     image: postgres:16.2-alpine
     environment:
+      POSTGRES_DB: timetable-db
       POSTGRES_USER: user-admin
       POSTGRES_PASSWORD: coO1paSSw0rD
     ports:
