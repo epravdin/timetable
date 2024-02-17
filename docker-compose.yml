@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  timetable-db:
+    container_name: timetable-db
+    image: postgres:16.2-alpine
+    environment:
+      POSTGRES_USER: user-admin
+      POSTGRES_PASSWORD: coO1paSSw0rD
+    ports:
+      - "15432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+volumes:
+  db-data:
