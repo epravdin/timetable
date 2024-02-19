@@ -9,11 +9,12 @@ const { version } = JSON.parse(
 
 export const autoPrefix = '/api';
 
-export default async function status(fastify: FastifyInstance) {
-  fastify.route({
+export default async function status(server: FastifyInstance) {
+  server.route({
     method: 'GET',
     url: '/status',
     handler: onStatus,
+    onRequest: [server.authenticate],
     schema: {
       response: {
         200: S.object().prop('status', S.string()).prop('version', S.string()),
