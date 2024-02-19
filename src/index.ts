@@ -1,16 +1,27 @@
+import { join } from 'path';
 import fastify from 'fastify';
-import env from './plugins/env';
-import aliveRoutes from './api/alive';
+import sensible from '@fastify/sensible';
+import cors from '@fastify/cors';
+import autoload from '@fastify/autoload';
+import helmet from '@fastify/helmet';
 
 const main = async () => {
   const server = fastify({ logger: true });
 
-  await server.register(env);
+  await server.register(sensible);
+  await server.register(cors);
+  await server.register(helmet);
+  await server.register(autoload, {
+    dir: join(__dirname, 'plugins'),
+  });
 
-  await server.register(aliveRoutes, { prefix: '/api' });
+  await server.register(autoload, {
+    dir: join(__dirname, 'api'),
+    dirNameRoutePrefix: false,
+  });
 
   try {
-    await server.listen({ port: 3000 });
+    await server.listen({ port: server.config.PORT });
   } catch (err) {
     server.log.error(err);
     process.exit(1);
