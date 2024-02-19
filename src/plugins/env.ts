@@ -1,57 +1,37 @@
-import env from '@fastify/env';
+import env, { FastifyEnvOptions } from '@fastify/env';
+import { FastifyRegisterOptions } from 'fastify';
 import fp from 'fastify-plugin';
+import S from 'fluent-json-schema';
 
-declare module 'fastify' {
-  interface FastifyInstance {
-    config: {
-      PORT: number;
-      POSTGRES_DB: string;
-      POSTGRES_USER: string;
-      POSTGRES_PASSWORD: string;
-      POSTGRES_HOST: string;
-      POSTGRES_PORT: number;
-    };
-  }
-}
-
-const schema = {
-  type: 'object',
-  required: [
+const schema = S.object()
+  .required([
     'PORT',
     'POSTGRES_DB',
     'POSTGRES_USER',
     'POSTGRES_PASSWORD',
     'POSTGRES_HOST',
     'POSTGRES_PORT',
-  ],
-  properties: {
-    PORT: {
-      type: 'number',
-      default: 3000,
-    },
-    POSTGRES_DB: {
-      type: 'string',
-    },
-    POSTGRES_USER: {
-      type: 'string',
-    },
-    POSTGRES_PASSWORD: {
-      type: 'string',
-    },
-    POSTGRES_HOST: {
-      type: 'string',
-    },
-    POSTGRES_PORT: {
-      type: 'number',
-    },
-  },
-};
+    'JWT_SECRET',
+  ])
+  .prop('PORT', S.number().default(3000))
+  .prop('POSTGRES_DB', S.string())
+  .prop('POSTGRES_USER', S.string())
+  .prop('POSTGRES_PASSWORD', S.string())
+  .prop('POSTGRES_HOST', S.string())
+  .prop('POSTGRES_PORT', S.number().default(15432))
+  .prop('JWT_SECRET', S.string())
+  .valueOf();
 
-const options = {
+const options: FastifyRegisterOptions<FastifyEnvOptions> = {
   schema,
   dotenv: true,
 };
 
-export default fp(async (server) => {
-  server.register(env, options);
-});
+export default fp(
+  async (server) => {
+    await server.register(env, options);
+  },
+  {
+    name: 'env',
+  }
+);
