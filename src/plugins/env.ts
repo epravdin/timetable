@@ -31,7 +31,5 @@ export default fp(
   async (server) => {
     await server.register(env, options);
   },
-  {
-    name: 'env',
-  }
+  { name: 'env' }
 );
